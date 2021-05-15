@@ -1,5 +1,6 @@
-const canvas_w = 800;
-const canvas_h = 600;
+let canvas_w = 200;
+let canvas_h = 200;
+let bg_opacity = 30;
 let xPos = canvas_w / 2;
 let yPos = canvas_h / 2;
 let initDiam = 40;
@@ -18,9 +19,6 @@ let b;
 
 const sketch = (p) => {
 
-    let x = 100;
-    let y = 100;
-
     p.setup = function () {
         p.frameRate(60);
         p.createCanvas(canvas_w, canvas_h);
@@ -35,7 +33,7 @@ const sketch = (p) => {
     };
 
     p.draw = function () {
-        p.background(30, 30);
+        p.background(0, bg_opacity);
         rad = diam / 2;
 
         //random mov
@@ -111,8 +109,59 @@ const sketch = (p) => {
     };
 };
 
-// let myp5 = new p5(sketch, window.document.getElementById("p5-container"));
-new p5(sketch, window.document.getElementById("p5-container"));
+const crearCanvasP5 = () => {
+    const bg_opacity_text = document.getElementById("bg_opacity").value;
+    const canvas_w_text = document.getElementById("canvas_w").value;
+    const canvas_h_text = document.getElementById("canvas_h").value;
+
+    bg_opacity = parseInt(bg_opacity_text, 10);
+    canvas_w = parseInt(canvas_w_text, 10);
+    canvas_h = parseInt(canvas_h_text, 10);
+
+    if (canvas_w === 0 || canvas_h === 0) {
+        throw new Error("El ancho o el alto no pueden ser 0.");
+    }
+
+    if (!bg_opacity || !canvas_h || !canvas_w) {
+        throw new Error("Datos incorrectos. Se admiten sólo números.");
+    }
+
+    if (bg_opacity < 0 || bg_opacity > 255) {
+        throw new Error("La opacidad supera los límites establecidos (0-255).")
+    }
+
+    xPos = canvas_w / 2;
+    yPos = canvas_h / 2;
+    xVel = 0;
+    yVel = 0;
+    xAcc = 0;
+    yAcc = 0;
+    diam = initDiam;
+    // let myp5 = new p5(sketch, window.document.getElementById("p5-container"));
+    new p5(sketch, document.getElementById("p5-container"));
+}
+
+const borrarCanvasP5 = () => {
+    document.getElementById("p5-container").innerHTML = "";
+}
+
+const handleBtnCanvas = () => {
+    try {
+        let btn = document.getElementById("btnCanvas");
+        if (btn.className === "canvasAdd btn btn-success") {
+            crearCanvasP5();
+            btn.className = "canvasRemove btn btn-danger";
+            btn.innerHTML = "Borrar";
+        } else {
+            borrarCanvasP5();
+            btn.className = "canvasAdd btn btn-success";
+            btn.innerHTML = "Crear";
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
 
 
 
